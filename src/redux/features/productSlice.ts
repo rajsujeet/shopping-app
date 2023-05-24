@@ -34,13 +34,11 @@ const productSlice: any = createSlice({
   extraReducers: (builder) => {
     builder
     .addMatcher(productApi.endpoints.getProduct.matchPending, (state, { payload }) => {
-      console.log("getProduct.matchPending========")
-    })
-      .addMatcher(productApi.endpoints.getProduct.matchFulfilled, (state, { payload }) => {
-        state.products = payload.data;
-        console.log("   state.products========", payload)
-      }) .addMatcher(productApi.endpoints.getProduct.matchRejected, (state, action) => {
-        console.log('rejected', action)
+      // console.log("getProduct.matchPending========", payload)
+    }).addMatcher(productApi.endpoints.getProduct.matchFulfilled, (state, { payload }) => {
+        state.products = payload.products;
+      }).addMatcher(productApi.endpoints.getProduct.matchRejected, (state, action) => {
+        // console.log('rejected', action)
       })
   },
 })
@@ -48,4 +46,5 @@ const productSlice: any = createSlice({
 export const { addToCart, removeFromCart, updateQuantity, cleanCart } = productSlice.actions
 export default productSlice.reducer
 
+export const selectProduct = (state: RootState) => state.product?.products;
 export const selectCart = (state: RootState) => state.product?.cart;

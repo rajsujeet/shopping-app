@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useGetProductMutation } from '../../redux/services/product';
-import { addToCart, removeFromCart, selectCart } from '../../redux/features/productSlice';
+import { addToCart, removeFromCart, selectCart, selectProduct } from '../../redux/features/productSlice';
 import { useAppDispatch, useTypedSelector } from '../../redux/store';
 import {ProductCard, Sort} from '../../comonents';
 
@@ -33,9 +33,10 @@ const sortData = [
 ]
 function Home() {
   const dispatch = useAppDispatch()
-  const [ products, setProducts ] = useState<Array<Product>>([]);
+  // const [ products, setProducts ] = useState<Array<Product>>([]);
   const [ sorts, setSorts ] = useState(sortData);
   const cart: Array<Product> = useTypedSelector(selectCart);
+  const products: Array<Product> = useTypedSelector(selectProduct);
   const [
     getProduct,
     {
@@ -53,15 +54,15 @@ function Home() {
   
   const getProductHandler = async () => {
     try{
-      const { products: _products } = await (await fetch("https://dummyjson.com/products")).json();
-      setProducts(_products);
-      // const payload = {
-      // };
-      // console.log("Home=====one===")
-      // if (!productLoading) {
-      //   console.log("Home===two=====")
-      //   await getProduct(payload).unwrap();
-      // }
+      // API call through Fetch API
+      // const { products: _products } = await (await fetch("https://dummyjson.com/products")).json();
+      // setProducts(_products);
+
+      // API call through RTK Query
+      const payload = { };
+      if (!productLoading) {
+        await getProduct(payload).unwrap();
+      }
     }catch(err){
 
     }
@@ -69,7 +70,7 @@ function Home() {
 
   const handleInput = (event: any, i: number) => {
     const _sorts = structuredClone(sorts);
-    _sorts.map((item: any, j: number) => {
+    _sorts?.map((item: any, j: number) => {
       if(i === j){
         item.isChecked = event.target.checked;
       }else {
@@ -88,11 +89,11 @@ function Home() {
   }
 
   const transformProducts = () => {
-    let actualProducts = products;
-    const sort = sorts.find(sort=> sort.isChecked);
+    let actualProducts = structuredClone(products);
+    const sort = sorts?.find(sort=> sort.isChecked);
 
     if (sort) {
-      actualProducts = actualProducts.sort((a: Product, b: Product) =>
+      actualProducts = actualProducts?.sort((a: Product, b: Product) =>
         sort.id === "lowToHigh" ? Number(a.price) - Number(b.price) : Number(b.price) - Number(a.price)
       );
     }

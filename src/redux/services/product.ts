@@ -14,16 +14,10 @@ export interface RecommendedActivity extends RecentActivity {
 
 export const productApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getProduct: builder.mutation<any, {}>({
-            query(body) {
-                return {
-                  url: '/products',
-                  method: 'GET',
-                  body,
-                }
-            },
-            invalidatesTags: ['Product'],
-        })
+        getProduct:builder.
+        mutation<any, {}>({
+            query: (body) => '/products'
+        }) 
     }),
   })
 export const { useGetProductMutation } = productApi
